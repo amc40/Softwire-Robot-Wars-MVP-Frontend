@@ -14,15 +14,22 @@ class Renderer {
         this.ctx = ctx
     }
     drawTank(tank) {
+        ctx.save();
+
+        ctx.translate(tank.location.x,tank.location.y);
+        ctx.rotate(tank.rotation * Math.PI/180);
+        //draw tracks
+        ctx.beginPath();
+        ctx.strokeStyle = Colours.BLACK;
+        ctx.fillStyle = Colours.BLACK;
+        ctx.rect(-tank.width/2+2,-tank.height/2-2,tank.width-4,tank.height+4);
+        ctx.fill();
+        ctx.stroke();
+        ctx.closePath();
         //draw body
-        
         ctx.beginPath();
         ctx.strokeStyle = Colours.BLACK;
         ctx.fillStyle = tank.colour;
-        ctx.save();
-        ctx.translate(tank.location.x,tank.location.y);
-        ctx.rotate(tank.rotation * Math.PI/180);
-        
         ctx.rect(-tank.width/2,-tank.height/2,tank.width,tank.height);
         ctx.fill();
         ctx.stroke();
@@ -69,7 +76,7 @@ class Tank {
         this.height = 25;
         this.rotation = rotation;
         this.speed = 1;
-        this.stateTimer = 300;
+        this.stateTimer = 100;
     }
 
     moveForward(distance) {
@@ -77,7 +84,7 @@ class Tank {
         this.location.y += Math.sin(this.rotation*Math.PI/180)*distance;
         this.stateTimer--;
         if(this.stateTimer == 0){
-            this.stateTimer = Math.round(Math.random()*1000);
+            this.stateTimer = Math.round(Math.random()*300);
             this.speed = !this.speed;
         }
 
