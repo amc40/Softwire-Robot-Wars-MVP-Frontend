@@ -15,7 +15,7 @@
             //     }
             // });
             // const socket = io("ws://localhost:3000");
-            const socket = io.connect("http://10.211.11.146:3000");
+            const socket = io.connect("http://localhost:3001");
             console.log("create socket")
             socket.on('welcome', function(data) {
                 addMessage(data.message);
