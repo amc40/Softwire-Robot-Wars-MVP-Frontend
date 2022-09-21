@@ -5,6 +5,18 @@
 
     <script>
 
+const socket = io.connect("ws://10.211.11.146:3001");
+console.log("create socket")
+
+        function startBattle() {
+            socket.emit('startBattle');
+            console.log("emit start battle");
+            socket.on('gameState', function(data) {
+                console.log(data);
+            });
+            
+        }
+
         function doUpload(){
             
             textarea = document.getElementById("code").value;
@@ -15,11 +27,18 @@
             //     }
             // });
             // const socket = io("ws://localhost:3000");
+<<<<<<< HEAD
             const socket = io.connect("http://localhost:3001");
             console.log("create socket")
             
             socket.on('welcome', function(data) {
                 // addMessage(data.message);
+=======
+            
+            
+            socket.on('welcome', function(data) {
+                //addMessage(data.message);
+>>>>>>> 67cc138bebd50e0979f4c9a6e946157463cae204
                 console.log("welcome message received")
                 // Respond with a message including this clients' id sent from the server
                 socket.emit('uploadRobot', {name: "Bob", colour: "RED", robotCode: textarea});
@@ -49,6 +68,8 @@
 <textarea id="code" cols="80" rows="40">Enter code</textarea>
 <br>
 <input type="submit" value="Upload" onclick="doUpload();return false">
+<br>
+<input type="submit" value="Start Battle!" onclick="startBattle();return false">
 
 <div id="messages">messages</div>
 
