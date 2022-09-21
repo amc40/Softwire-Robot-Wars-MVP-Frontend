@@ -28,11 +28,11 @@ class Renderer {
         ctx.closePath();
 
         ctx.beginPath();
-        ctx.arc(0,0,10,0,2*Math.PI);
+        ctx.arc(0,0,8,0,2*Math.PI);
         ctx.fill();
         ctx.stroke();
         ctx.closePath();
-        
+
         ctx.restore();
     }
 }
