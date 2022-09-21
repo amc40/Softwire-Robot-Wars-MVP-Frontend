@@ -34,6 +34,9 @@ class Renderer {
         ctx.stroke();
         ctx.closePath();
 
+        //draw turret
+
+        ctx.rotate(tank.turretAngle * Math.PI/180);
         ctx.beginPath();
         ctx.rect(-3,-2,18,4);
         ctx.fill();
@@ -65,6 +68,19 @@ class Tank {
         this.width = 35;
         this.height = 25;
         this.rotation = rotation;
+        this.speed = 1;
+        this.stateTimer = 300;
+    }
+
+    moveForward(distance) {
+        this.location.x += Math.cos(this.rotation*Math.PI/180)*distance;
+        this.location.y += Math.sin(this.rotation*Math.PI/180)*distance;
+        this.stateTimer--;
+        if(this.stateTimer == 0){
+            this.stateTimer = Math.round(Math.random()*1000);
+            this.speed = !this.speed;
+        }
+
     }
 }
 
@@ -79,12 +95,14 @@ function drawGame(){
 function gameUpdateLoop(){
 
     for(let tank of players){
-        tank.rotation+=1;
+        tank.rotation+=1.5;
+        tank.turretAngle-=2;
+        tank.moveForward(tank.speed);
     }
 
     drawGame();
 
-    setTimeout(gameUpdateLoop, 50)
+    setTimeout(gameUpdateLoop, 16.7)
 }
 
 const canvas = document.getElementById('cvs');
