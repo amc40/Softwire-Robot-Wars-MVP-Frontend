@@ -7,7 +7,7 @@
 
         function doUpload(){
             
-            textarea = document.getElementById("code").innerHTML;
+            textarea = document.getElementById("code").value;
             
             // const io = require('socket.io')(server, {
             //     cors: {
@@ -19,7 +19,7 @@
             console.log("create socket")
             
             socket.on('welcome', function(data) {
-                addMessage(data.message);
+                // addMessage(data.message);
                 console.log("welcome message received")
                 // Respond with a message including this clients' id sent from the server
                 socket.emit('uploadRobot', {name: "Bob", colour: "RED", robotCode: textarea});
