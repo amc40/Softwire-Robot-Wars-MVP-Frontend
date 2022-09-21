@@ -15,13 +15,14 @@
             //     }
             // });
             // const socket = io("ws://localhost:3000");
-            const socket = io.connect("http://10.211.11.146:3000");
+            const socket = io.connect("ws://10.211.11.146:3001");
             console.log("create socket")
+            
             socket.on('welcome', function(data) {
                 addMessage(data.message);
-                console.log("welcome")
+                console.log("welcome message received")
                 // Respond with a message including this clients' id sent from the server
-                socket.emit('i am client', {data: 'foo!', id: data.id});
+                socket.emit('uploadRobot', {name: "Bob", colour: "RED", robotCode: textarea});
             });
             socket.on('time', function(data) {
                 addMessage(data.time);
