@@ -2,7 +2,7 @@ const Colours = {
     BLACK: '#000',
     RED: '#F00',
     GREEN: '#0F0',
-    BLUE: '#00F'
+    BLUE: '#89CFF0'
 }
 
 
@@ -22,6 +22,7 @@ class Renderer {
         ctx.save();
         ctx.translate(tank.location.x,tank.location.y);
         ctx.rotate(tank.rotation * Math.PI/180);
+        
         ctx.rect(-tank.width/2,-tank.height/2,tank.width,tank.height);
         ctx.fill();
         ctx.stroke();
@@ -29,6 +30,18 @@ class Renderer {
 
         ctx.beginPath();
         ctx.arc(0,0,8,0,2*Math.PI);
+        ctx.fill();
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.rect(-3,-2,18,4);
+        ctx.fill();
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.rect(12,-3,9,6);
         ctx.fill();
         ctx.stroke();
         ctx.closePath();
@@ -49,7 +62,7 @@ class Tank {
         this.location = location;
         this.turretAngle = turretAngle;
         this.colour = colour;
-        this.width = 40;
+        this.width = 35;
         this.height = 25;
         this.rotation = rotation;
     }
@@ -66,12 +79,12 @@ function drawGame(){
 function gameUpdateLoop(){
 
     for(let tank of players){
-        tank.rotation+=0.1;
+        tank.rotation+=1;
     }
 
     drawGame();
 
-    setInterval(gameUpdateLoop, 50)
+    setTimeout(gameUpdateLoop, 50)
 }
 
 const canvas = document.getElementById('cvs');
