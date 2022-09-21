@@ -5,8 +5,12 @@
 
     <script>
 
-const socket = io.connect("ws://10.211.11.146:3001");
-console.log("create socket")
+        const socket = io.connect("ws://10.211.11.146:3001");
+        socket.on('welcome', function(data) {
+            console.log("welcome message received")
+            // Respond with a message including this clients' id sent from the server
+                        
+        });
 
         function startBattle() {
             socket.emit('startBattle');
@@ -21,42 +25,9 @@ console.log("create socket")
             
             textarea = document.getElementById("code").value;
             nameInput = document.getElementById("name").value;
-            // const io = require('socket.io')(server, {
-            //     cors: {
-            //         origin: '*',
-            //     }
-            // });
-            // const socket = io("ws://localhost:3000");
-<<<<<<< HEAD
-            const socket = io.connect("http://localhost:3001");
-            console.log("create socket")
-            
-            socket.on('welcome', function(data) {
-                // addMessage(data.message);
-=======
-            
-            
-            socket.on('welcome', function(data) {
-                //addMessage(data.message);
->>>>>>> 67cc138bebd50e0979f4c9a6e946157463cae204
-                console.log("welcome message received")
-                // Respond with a message including this clients' id sent from the server
-                socket.emit('uploadRobot', {name: nameInput, colour: "RED", robotCode: textarea});
-            });
-            socket.on('time', function(data) {
-                addMessage(data.time);
-            });
-            socket.on('error', console.error.bind(console));
-            socket.on('message', console.log.bind(console));
 
-            function addMessage(message) {
-                var text = document.createTextNode(message),
-                    el = document.createElement('li'),
-                    messages = document.getElementById('messages');
-
-                el.appendChild(text);
-                messages.appendChild(el);
-            }
+            socket.emit('uploadRobot', {name: nameInput, colour: "RED", robotCode: textarea});
+            
         }
 
     </script>
