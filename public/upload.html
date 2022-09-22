@@ -1,49 +1,65 @@
 <!DOCTYPE html>
 
 <head>
-    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js" integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k" crossorigin="anonymous"></script>
-
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"
+        integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k"
+        crossorigin="anonymous"></script>
+    <style type="text/css" media="screen">
+        #editor {
+            width: 700px;
+            height: 700px;
+        }
+    </style>
     <script>
 
         const socket = io.connect("ws://10.211.11.146:3001");
-        socket.on('welcome', function(data) {
+        socket.on('welcome', function (data) {
             console.log("welcome message received")
             // Respond with a message including this clients' id sent from the server
-                        
+
         });
 
         function startBattle() {
             socket.emit('startBattle');
             console.log("emit start battle");
-            socket.on('gameState', function(data) {
+            socket.on('gameState', function (data) {
                 console.log(data);
             });
-            
         }
 
-        function doUpload(){
-            
-            textarea = document.getElementById("code").value;
+        function doUpload() {
+            userCode = editor.getValue().replace(/\n/g, '');;
             nameInput = document.getElementById("name").value;
-
-            socket.emit('uploadRobot', {name: nameInput, colour: "RED", robotCode: textarea});
-            
+            socket.emit('uploadRobot', { name: nameInput, colour: "RED", robotCode: userCode });
         }
 
     </script>
 </head>
+
 <body>
 
-<h1>Upload bot code</h1>
+    <h1>Upload bot code</h1>
 
-<label for="name">Name</label>
-<input type="type" id="name"><br>
-<textarea id="code" cols="80" rows="40">Enter code</textarea>
-<br>
-<input type="submit" value="Upload" onclick="doUpload();return false">
-<br>
-<input type="submit" value="Start Battle!" onclick="startBattle();return false">
+    <label for="name">Name</label>
+    <input type="type" id="name"><br>
 
-<div id="messages">messages</div>
+    <div id="editor">function foo(items) {
+        var x = "All this is syntax highlighted";
+        return x;
+        }</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.11.0/ace.js" type="text/javascript"
+        charset="utf-8"></script>
+    <script>
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.session.setMode("ace/mode/javascript");
+    </script>
+    <br>
+    <input type="submit" value="Upload" onclick="doUpload();return false">
+    <br>
+    <input type="submit" value="Start Battle!" onclick="startBattle();return false">
+
+    <div id="messages">messages</div>
 
 </body>
