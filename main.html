@@ -4,8 +4,33 @@
     <link rel="stylesheet" href="styles.css">
     <title>ROBOTWAR</title>
 
-    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js" integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k" crossorigin="anonymous"></script>
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"
+        integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k"
+        crossorigin="anonymous"></script>
+    <script>
 
+        const socket = io.connect("ws://localhost:3001");
+        socket.on('welcome', function (data) {
+            console.log("welcome message received")
+            // Respond with a message including this clients' id sent from the server
+
+        });
+
+        function startBattle() {
+            socket.emit('startBattle');
+            console.log("emit start battle");
+            socket.on('gameState', function (data) {
+                console.log(data);
+            });
+        }
+
+        function doUpload() {
+            userCode = editor.getValue().replace(/\n/g, '');;
+            nameInput = document.getElementById("name").value;
+            socket.emit('uploadRobot', { name: nameInput, colour: "RED", robotCode: userCode });
+        }
+
+    </script>
 </head>
 
 <body>
