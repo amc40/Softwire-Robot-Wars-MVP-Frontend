@@ -12,7 +12,7 @@
     </style>
     <script>
 
-        const socket = io.connect("ws://10.211.11.146:3001");
+        const socket = io.connect("ws://localhost:3001");
         socket.on('welcome', function (data) {
             console.log("welcome message received")
             // Respond with a message including this clients' id sent from the server
@@ -38,8 +38,11 @@
 
 <body>
 
-    <h1>Upload bot code</h1>
-
+    <h1>Upload page</h1>
+    <a href="../main.html">networking page</a>
+    <br>
+    <a href="../demo.html">demo page</a>
+    <br><br>
     <label for="name">Name</label>
     <input type="type" id="name"><br>
 
