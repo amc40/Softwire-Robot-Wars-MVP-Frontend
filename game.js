@@ -10,7 +10,7 @@ class Renderer {
     constructor(ctx) {
         this.ctx = ctx
     }
-    drawTank(tank) {
+    drawTankBody(tank) {
         ctx.save();
 
         ctx.translate(tank.location.x, tank.location.y);
@@ -32,14 +32,24 @@ class Renderer {
         ctx.stroke();
         ctx.closePath();
 
+        ctx.restore();
+    }
+    drawTankTurret(tank) {
+        ctx.save();
+
+        ctx.strokeStyle = Colours.BLACK;
+        ctx.fillStyle = tank.colour;
+
+        //circle
+        ctx.translate(tank.location.x, tank.location.y);
+        ctx.rotate(tank.rotation * Math.PI / 180);
         ctx.beginPath();
         ctx.arc(0, 0, 8, 0, 2 * Math.PI);
         ctx.fill();
         ctx.stroke();
         ctx.closePath();
 
-        //draw turret
-
+        //turret
         ctx.rotate(tank.turretAngle * Math.PI / 180);
         ctx.beginPath();
         ctx.rect(-3, -2, 18, 4);
@@ -68,7 +78,26 @@ class Renderer {
         ctx.save();
 
         ctx.translate(projectile.x, projectile.y);
-        ctx.rotate(projectile.rotation);
+        ctx.rotate(projectile.rotation * Math.PI / 180);
+
+        //trail
+        ctx.globalAlpha = 0.7;
+        ctx.beginPath();
+        ctx.arc(-3, 0, 3, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.closePath();
+        ctx.globalAlpha = 0.45;
+        ctx.beginPath();
+        ctx.arc(-6, 0, 3, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.closePath();
+        ctx.globalAlpha = 0.2;
+        ctx.beginPath();
+        ctx.arc(-9, 0, 3, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.closePath();
+        //circle
+        ctx.globalAlpha = 1;
         ctx.beginPath();
         ctx.arc(0, 0, 3, 0, 2 * Math.PI);
         ctx.fill();
@@ -76,6 +105,8 @@ class Renderer {
         ctx.closePath();
 
         ctx.restore();
+
+        ctx.globalAlpha = 1;
     }
 }
 
@@ -89,17 +120,6 @@ class Tank {
         this.rotation = rotation;
         this.speed = 1;
         this.stateTimer = 100;
-    }
-
-    moveForward(distance) {
-        this.location.x += Math.cos(this.rotation * Math.PI / 180) * distance;
-        this.location.y += Math.sin(this.rotation * Math.PI / 180) * distance;
-        this.stateTimer--;
-        if (this.stateTimer == 0) {
-            this.stateTimer = Math.round(Math.random() * 300);
-            this.speed = !this.speed;
-        }
-
     }
 
 }
