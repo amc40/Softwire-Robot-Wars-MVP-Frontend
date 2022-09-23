@@ -6,3 +6,20 @@ canvas {
     margin-right: auto;
     display: block;
 }
+
+ul.status {
+    list-style:none
+}
+
+.health-background {
+    background-color:rgb(183, 183, 183);
+    width: 200px;
+
+}
+
+.health-foreground {
+    background-color: rgb(124, 237, 19);
+    width:100%;
+    border-right: 4px solid black;
+    box-sizing: border-box;
+}

@@ -66,18 +66,13 @@ class Renderer {
         ctx.restore();
     }
     drawProjectile(projectile) {
-        // x
-        // y
-        // xVel
-        // yVel
-        // rotation
-        // owner
+
         ctx.strokeStyle = Colours.BLACK;
         ctx.fillStyle = projectile.owner.colour;
 
         ctx.save();
 
-        ctx.translate(projectile.x, projectile.y);
+        ctx.translate(projectile.location.x, projectile.location.y);
         ctx.rotate(projectile.rotation * Math.PI / 180);
 
         //trail
@@ -111,7 +106,7 @@ class Renderer {
 }
 
 class Tank {
-    constructor(location = { x: 0, y: 0 }, rotation = 0, turretAngle = 0, colour = "GREEN") {
+    constructor(location = { x: 0, y: 0 }, rotation = 0, turretAngle = 0, colour = "GREEN", name = "BOB") {
         this.location = location;
         this.turretAngle = turretAngle;
         this.colour = colour;
@@ -120,8 +115,20 @@ class Tank {
         this.rotation = rotation;
         this.speed = 1;
         this.stateTimer = 100;
+        this.name = name;
+        this.health = 100;
+        this.maxHealth = 100;
     }
 
+}
+
+class Projectile {
+    constructor(location = { x: 0, y: 0 }, rotation = 0, owner = null) {
+        this.location = location;
+        this.rotation = rotation;
+        this.owner = owner;
+        this.colour = owner.colour;
+    }
 }
 
 const canvas = document.getElementById('cvs');

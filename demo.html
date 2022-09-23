@@ -12,13 +12,29 @@
     <br>
     <a href="./public/upload.html">upload page</a>
     <br><br>
-<canvas id='cvs' width='600px' height = '480px'>
+    <canvas id='cvs' width='600px' height='480px'>
 
-</canvas>
+    </canvas>
 
+    <ul class="status">
+        <li>Player 1 (<span id='player1-name'></span>)<br>
+            <div class="health-background">
+                <div id="player1-health" class="health-foreground">
+                    &nbsp;
+                </div>
+            </div>
+        </li>
+        <br>
+        <li>Player 2 (<span id='player2-name'></span>)<br>
+            <div class="health-background">
+                <div id="player2-health" class="health-foreground">
+                    &nbsp;
+                </div>
+            </div>
+        </li>
+    </ul>
 
-<script src="game.js"></script>
-<script src="demo.js"></script>
+    <script src="game.js"></script>
+    <script src="demo.js"></script>
 
 </body>
-
