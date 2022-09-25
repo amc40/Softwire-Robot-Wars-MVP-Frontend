@@ -12,9 +12,11 @@ function startBattle() {
     socket.on('gameState', function (data) {
         // console.log(data);
         updateGameStateFromRemote(data);
+        updatePlayerHealthBars();
+        updatePlayerNames();
 
     });
-    window.requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
 }
 
 function doUpload() {
@@ -26,7 +28,7 @@ function doUpload() {
 gameState = { players: [], projectiles: [] };
 GameRenderer = new Renderer(ctx);
 
-function updateGameStateFromRemote(data){
+function updateGameStateFromRemote(data) {
     /*
         robots[]
             name
@@ -34,20 +36,44 @@ function updateGameStateFromRemote(data){
             turretAngle
 
     */
-   gameState.players = data.robots;
-   for(let player of gameState.players) {
-    player.rotation = 0;
-    player.location = {x: player.position[0]/100, y: player.position[1]/100}
-   }
+    gameState.players = data.robots;
+    for (let player of gameState.players) {
+        player.rotation = player.rotation || 0;
+        player.location = { x: player.position[0], y: player.position[1] }
+        player.maxHealth = 100;
+        player.health = player.hitPoints;
+        player.height = 25;
+        player.width = 35;
+    }
+    gameState.players[0].colour = Colours.RED;
+    gameState.players[1].colour = Colours.BLUE;
+}
+
+function getGameState() {
+    return gameState;
 }
 
 function animate() {
+    gameState = getGameState();
     drawGame(gameState);
-    window.requestAnimationFrame(animate);
+    updatePlayerHealthBars();
+    requestAnimationFrame(animate);
+}
+
+function updatePlayerNames() {
+    for(let i = 0; i < gameState.players.length; i++) {
+        document.getElementById('player'+(i+1)+'-name').innerText = gameState.players[i].name;
+        document.getElementById('player'+(i+1)+'-health').style.backgroundColor = gameState.players[i].colour;
+    }
+}
+
+function updatePlayerHealthBars() {
+    for(let i = 0; i < gameState.players.length; i++) {
+        document.getElementById('player'+(i+1)+'-health').style.width = (Math.max(0,(gameState.players[i].health / gameState.players[i].maxHealth))*100)+"%";
+    }
 }
 
 function drawGame(gameState) {
-    console.log(gameState);
     ctx.fillStyle = Colours.GREY;
     ctx.fillRect(0, 0, 640, 480)
     let players = gameState.players || null;
