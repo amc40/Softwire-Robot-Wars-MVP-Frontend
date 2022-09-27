@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<head>
+  <script
+    src="https://cdn.socket.io/4.5.0/socket.io.min.js"
+    integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k"
+    crossorigin="anonymous"
+  ></script>
+  <link rel="stylesheet" href="../../styles/styles.css" />
+  <style type="text/css" media="screen">
+    #editor {
+      width: 700px;
+      height: 700px;
+    }
+  </style>
+  <script src="./upload.js" type="text/javascript">
+  </script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header danger"></div>
+    <div class="content">
+      <p class="title">Upload Page</p>
+
+      <a href="../main/main.html">networking page</a>
+      <br />
+      <a href="../demo/demo.html">demo page</a>
+      <br /><br />
+    </div>
+    <div class="content">
+      <label for="name">Name</label>
+      <input type="type" id="name" /><br /><br />
+    </div>
+    <div class="content">
+      <div id="editor">
+function getRobotAction(gameState) { 
+    return { moveDirection: "up", rotateTurret: "clockwise", fire: false };
+}
+module.exports = getRobotAction;</div>
+
+      <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.11.0/ace.js"
+        type="text/javascript"
+        charset="utf-8"
+      ></script>
+      <script>
+        // document.getElementById("editor").innerHTML = ```
+
+        //         ```;
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.session.setMode("ace/mode/javascript");
+      </script>
+      <br />
+    </div>
+    <div class="content">
+      <input type="submit" value="Upload" onclick="doUpload();return false" />
+
+      <input
+        type="submit"
+        value="Start Battle!"
+        onclick="startBattle();return false"
+      />
+    </div>
+    <div class="footer danger"></div>
+  </div>
+</body>
