@@ -4,6 +4,7 @@
     <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"
         integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k"
         crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../styles.css">
     <style type="text/css" media="screen">
         #editor {
             width: 700px;
@@ -38,31 +39,45 @@
 
 <body>
 
-    <h1>Upload page</h1>
-    <a href="../main.html">networking page</a>
-    <br>
-    <a href="../demo.html">demo page</a>
-    <br><br>
-    <label for="name">Name</label>
-    <input type="type" id="name"><br>
+    <div class="container">
+        <div class="header danger"></div>
+        <div class="content">
+            <p class="title">Upload Page</p>
 
-    <div id="editor">function foo(items) {
-        var x = "All this is syntax highlighted";
-        return x;
-        }</div>
+            <a href="../main.html">networking page</a>
+            <br>
+            <a href="../demo.html">demo page</a>
+            <br><br>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.11.0/ace.js" type="text/javascript"
-        charset="utf-8"></script>
-    <script>
-        var editor = ace.edit("editor");
-        editor.setTheme("ace/theme/monokai");
-        editor.session.setMode("ace/mode/javascript");
-    </script>
-    <br>
-    <input type="submit" value="Upload" onclick="doUpload();return false">
-    <br>
-    <input type="submit" value="Start Battle!" onclick="startBattle();return false">
+        </div>
+        <div class="content">
 
-    <div id="messages">messages</div>
+            <label for="name">Name</label>
+            <input type="type" id="name"><br><br>
+        </div>
+        <div class="content">
+            <div id="editor">function foo(items) {
+                var x = "All this is syntax highlighted";
+                return x;
+                }
+            </div>
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.11.0/ace.js" type="text/javascript"
+                charset="utf-8"></script>
+            <script>
+                var editor = ace.edit("editor");
+                editor.setTheme("ace/theme/monokai");
+                editor.session.setMode("ace/mode/javascript");
+            </script>
+            <br>
+        </div>
+        <div class="content">
+            <input type="submit" value="Upload" onclick="doUpload();return false">
+
+            <input type="submit" value="Start Battle!" onclick="startBattle();return false">
+        </div>
+        <div class="footer danger"></div>
+    </div>
+
 
 </body>
