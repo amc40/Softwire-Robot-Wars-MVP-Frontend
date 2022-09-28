@@ -22,7 +22,7 @@ function startBattle() {
 function doUpload() {
     userCode = editor.getValue().replace(/\n/g, '');;
     nameInput = document.getElementById("name").value;
-    socket.emit('uploadRobot', { name: nameInput, colour: "RED", robotCode: userCode });
+    socket.emit('uploadRobot', { name: nameInput, color: "RED", robotCode: userCode });
 }
 
 gameState = { players: [], projectiles: [] };
@@ -38,15 +38,22 @@ function updateGameStateFromRemote(data) {
     */
     gameState.players = data.robots;
     for (let player of gameState.players) {
-        player.rotation = player.rotation || 0;
+        player.rotation = player.angle || 0;
+        player.turretRotation = player.turretAngle || 0;
         player.location = { x: player.position[0], y: player.position[1] }
         player.maxHealth = 100;
         player.health = player.hitPoints;
         player.height = 25;
         player.width = 35;
     }
-    gameState.players[0].colour = Colours.RED;
-    gameState.players[1].colour = Colours.BLUE;
+    gameState.players[0].color = Colours.RED;
+    gameState.players[1].color = Colours.BLUE;
+    gameState.projectiles = data.projectiles;
+    gameState.projectiles = gameState.projectiles.map(projectile => ({
+        ...projectile,
+        location: { x: projectile.position[0], y: projectile.position[1] },
+        rotation: Math.atan(projectile.velocity[1] / projectile.velocity[0]),
+    }));
 }
 
 function getGameState() {
@@ -63,7 +70,7 @@ function animate() {
 function updatePlayerNames() {
     for(let i = 0; i < gameState.players.length; i++) {
         document.getElementById('player'+(i+1)+'-name').innerText = gameState.players[i].name;
-        document.getElementById('player'+(i+1)+'-health').style.backgroundColor = gameState.players[i].colour;
+        document.getElementById('player'+(i+1)+'-health').style.backgroundColor = gameState.players[i].color;
     }
 }
 
@@ -78,6 +85,7 @@ function drawGame(gameState) {
     ctx.fillRect(0, 0, 640, 480)
     let players = gameState.players || null;
     let projectiles = gameState.projectiles || null;
+    console.log("projectiles", projectiles);
     for (let player of players) {
         GameRenderer.drawTankBody(player);
     }

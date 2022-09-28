@@ -42,7 +42,7 @@ class Renderer {
         //draw body
         ctx.beginPath();
         ctx.strokeStyle = Colours.BLACK;
-        ctx.fillStyle = tank.colour;
+        ctx.fillStyle = tank.color;
         ctx.rect(-tank.width / 2, -tank.height / 2, tank.width, tank.height);
         ctx.fill();
         ctx.stroke();
@@ -54,7 +54,7 @@ class Renderer {
         ctx.save();
 
         ctx.strokeStyle = Colours.BLACK;
-        ctx.fillStyle = tank.colour;
+        ctx.fillStyle = tank.color;
 
         //circle
         const tankCanvasX = this.gameXToCanvasX(tank.location.x);
@@ -86,11 +86,12 @@ class Renderer {
     drawProjectile(projectile) {
 
         ctx.strokeStyle = Colours.BLACK;
-        ctx.fillStyle = projectile.owner.colour;
+        ctx.fillStyle = projectile.owner.color;
 
         ctx.save();
-
-        ctx.translate(projectile.location.x, projectile.location.y);
+        const projectileCanvasX = this.gameXToCanvasX(projectile.location.x);
+        const projectileCanvasY = this.gameYToCanvasY(projectile.location.y);
+        ctx.translate(projectileCanvasX, projectileCanvasY);
         ctx.rotate(projectile.rotation);
 
         //trail
@@ -124,10 +125,10 @@ class Renderer {
 }
 
 class Tank {
-    constructor(location = { x: 0, y: 0 }, rotation = 0, turretAngle = 0, colour = "GREEN", name = "BOB") {
+    constructor(location = { x: 0, y: 0 }, rotation = 0, turretAngle = 0, color = "GREEN", name = "BOB") {
         this.location = location;
         this.turretAngle = turretAngle;
-        this.colour = colour;
+        this.color = color;
         this.width = 35;
         this.height = 25;
         this.rotation = rotation;
@@ -145,7 +146,7 @@ class Projectile {
         this.location = location;
         this.rotation = rotation;
         this.owner = owner;
-        this.colour = owner.colour;
+        this.color = owner.color;
     }
 }
 

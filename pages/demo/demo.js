@@ -92,7 +92,7 @@ Tank.prototype.moveForward = function(distance) {
 function updatePlayerNames() {
     for(let i = 0; i < players.length; i++) {
         document.getElementById('player'+(i+1)+'-name').innerText = players[i].name;
-        document.getElementById('player'+(i+1)+'-health').style.backgroundColor = players[i].colour;
+        document.getElementById('player'+(i+1)+'-health').style.backgroundColor = players[i].color;
     }
 }
 

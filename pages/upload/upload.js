@@ -17,7 +17,7 @@ function doUpload() {
   nameInput = document.getElementById("name").value;
   socket.emit("uploadRobot", {
     name: nameInput,
-    colour: "RED",
+    color: "RED",
     robotCode: userCode,
   });
 }
