@@ -25,7 +25,7 @@ function doUpload() {
     socket.emit('uploadRobot', { name: nameInput, color: "RED", robotCode: userCode });
 }
 
-gameState = { players: [], projectiles: [] };
+gameStates = [{},{}];
 GameRenderer = new Renderer(ctx);
 
 function updateGameStateFromRemote(data) {
@@ -36,8 +36,9 @@ function updateGameStateFromRemote(data) {
             turretAngle
 
     */
-    gameState.players = data.robots;
-    for (let player of gameState.players) {
+   let newGameState = { players: [], projectiles: [] };
+    newGameState.players = data.robots;
+    for (let player of newGameState.players) {
         player.rotation = player.angle || 0;
         player.turretRotation = player.turretAngle || 0;
         player.location = player.position;
@@ -46,26 +47,33 @@ function updateGameStateFromRemote(data) {
         player.height = 25;
         player.width = 35;
     }
-    gameState.players[0].color = Colours.RED;
-    gameState.players[1].color = Colours.BLUE;
-    gameState.projectiles = data.projectiles;
-    gameState.projectiles = gameState.projectiles.map(projectile => ({
+    newGameState.players[0].color = Colours.RED;
+    newGameState.players[1].color = Colours.BLUE;
+    newGameState.projectiles = data.projectiles;
+    newGameState.projectiles = newGameState.projectiles.map(projectile => ({
         ...projectile,
         location: projectile.position,
         rotation: Math.atan2(projectile.velocity.y,projectile.velocity.x)
     }));
+    newGameState.timestamp = new Date().getTime();
+    gameStates[0] = gameStates[1];
+    gameStates[1] = newGameState;
 }
 
 function getGameState() {
-    return gameState;
+    return gameStates[0];
 }
 
 function animate() {
     gameState = getGameState();
+    if(gameStates[0] != {}){
+        gameState = interpolateGameState(gameStates[0],gameStates[1]);
+    } 
     drawGame(gameState);
     updatePlayerHealthBars();
     requestAnimationFrame(animate);
 }
+
 
 function updatePlayerNames() {
     for(let i = 0; i < gameState.players.length; i++) {

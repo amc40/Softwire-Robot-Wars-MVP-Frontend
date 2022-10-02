@@ -9,7 +9,7 @@ const Colours = {
 class Renderer {
     GAME_MAX_X = 1000
     GAME_MAX_Y = 1000
-    
+
     constructor(ctx) {
         this.ctx = ctx
     }
@@ -26,7 +26,7 @@ class Renderer {
 
     drawTankBody(tank) {
         ctx.save();
-        
+
         const tankCanvasX = this.gameXToCanvasX(tank.location.x);
         const tankCanvasY = this.gameYToCanvasY(tank.location.y);
         ctx.translate(tankCanvasX, tankCanvasY);
@@ -148,6 +148,38 @@ class Projectile {
         this.owner = owner;
         this.color = owner.color;
     }
+}
+
+
+function interpolateGameState(lastGameState, nextGameState) {
+    const UPDATE_RATE = 32.25;
+    // we are storing the 2 most recent game states
+    // to smooth animations we will assume a fixed update rate and render a weighted average of the positions/rotations of game objects
+    // the weighting calculation will be: animationDelta = (timeNow - timeAtMostRecentGameState) / UPDATE_RATE
+    const timeNow = new Date().getTime();
+    const animationDelta = Math.min((timeNow - nextGameState.timestamp) / UPDATE_RATE, 1.5);
+    let interpolatedGameState = {};
+    interpolatedGameState = Object.assign(interpolatedGameState,lastGameState);
+    console.log(lastGameState.players)
+    console.log(interpolateGameState.players)
+    for (let player of interpolatedGameState.players) {
+        let name = player.name;
+        let playerIndexNextGameState = nextGameState.players.findIndex(player => player.name == name);
+        if (isPresentNextGameState != -1) {
+            futurePlayer = nextGameState.players[playerIndexNextGameState];
+            player.rotation += (futurePlayer.rotation - player.rotation) * animationDelta;
+            player.turretRotation += (futurePlayer.turretRotation - player.turretRotation) * animationDelta;
+            player.location.x += (futurePlayer.location.x - player.location.x) * animationDelta;
+            player.location.y += (futurePlayer.location.y - player.location.y) * animationDelta;
+            player.health += (futurePlayer.health - player.health) * animationDelta;
+        }
+    }
+    for (let projectile of interpolateGameState.projectiles) {
+        // project forwards by current velocity (avoids having to check if projectile exists in nextGameState)
+        projectile.x += projectile.velocity.x * animationDelta;
+        projectile.y += projectile.velocity.y * animationDelta;
+    }
+    return interpolateGameState;
 }
 
 const canvas = document.getElementById('cvs');
