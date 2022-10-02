@@ -52,7 +52,7 @@ function updateGameStateFromRemote(data) {
     gameState.projectiles = gameState.projectiles.map(projectile => ({
         ...projectile,
         location: { x: projectile.position[0], y: projectile.position[1] },
-        rotation: Math.atan(projectile.velocity[1] / projectile.velocity[0]),
+        rotation: Math.atan2(projectile.velocity[1],projectile.velocity[0])
     }));
 }
 
@@ -85,7 +85,6 @@ function drawGame(gameState) {
     ctx.fillRect(0, 0, 640, 480)
     let players = gameState.players || null;
     let projectiles = gameState.projectiles || null;
-    console.log("projectiles", projectiles);
     for (let player of players) {
         GameRenderer.drawTankBody(player);
     }
