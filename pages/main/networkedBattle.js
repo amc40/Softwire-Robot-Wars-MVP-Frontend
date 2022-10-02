@@ -40,7 +40,7 @@ function updateGameStateFromRemote(data) {
     for (let player of gameState.players) {
         player.rotation = player.angle || 0;
         player.turretRotation = player.turretAngle || 0;
-        player.location = { x: player.position[0], y: player.position[1] }
+        player.location = player.position;
         player.maxHealth = 100;
         player.health = player.hitPoints;
         player.height = 25;
@@ -51,8 +51,8 @@ function updateGameStateFromRemote(data) {
     gameState.projectiles = data.projectiles;
     gameState.projectiles = gameState.projectiles.map(projectile => ({
         ...projectile,
-        location: { x: projectile.position[0], y: projectile.position[1] },
-        rotation: Math.atan2(projectile.velocity[1],projectile.velocity[0])
+        location: projectile.position,
+        rotation: Math.atan2(projectile.velocity.y,projectile.velocity.x)
     }));
 }
 
