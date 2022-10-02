@@ -82,7 +82,7 @@ function updatePlayerHealthBars() {
 
 function drawGame(gameState) {
     ctx.fillStyle = Colours.GREY;
-    ctx.fillRect(0, 0, 640, 480)
+    ctx.fillRect(0, 0, 600, 600)
     let players = gameState.players || null;
     let projectiles = gameState.projectiles || null;
     for (let player of players) {
