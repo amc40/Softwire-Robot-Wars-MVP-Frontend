@@ -1,0 +1,91 @@
+canvas {
+    border: 1px solid black;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+ul.status {
+    list-style:none
+}
+
+.health-background {
+    background-color:rgb(183, 183, 183);
+    width: 200px;
+
+}
+
+.health-foreground {
+    background-color: rgb(124, 237, 19);
+    width:100%;
+    border-right: 4px solid black;
+    box-sizing: border-box;
+}
+
+.content {
+    padding: 1em;
+    background-color:white
+
+}
+
+.container {
+    margin: 0 auto;
+    max-width: 1000px;
+    background-color: white;
+    border-left:1px solid black;
+    border-right:1px solid black;
+    box-shadow: 5px 5px 10px #888888;
+}
+
+.danger {
+ background: repeating-linear-gradient(
+        45deg,
+        #f7f73e,
+        #f7f73e 20px,
+        #111111 20px,
+        #111111 40px
+      );
+      border-bottom: 1px solid black;
+}
+
+.footer, .header {
+    height:50px;
+      border-top: 1px solid black;
+}
+
+.center {
+    text-align: center;
+    margin: 0 auto;
+}
+
+.ace_editor {
+    margin: 0 auto;
+}
+
+body {
+      background-color:rgb(211, 211, 211);
+}
+
+p {
+    margin-block-start: 0;
+    margin-block-end: 0;
+}
+
+p.title {
+    color:black;
+    font-size: xx-large;
+    font-weight:bold;
+    position: relative;
+    text-align:center;
+}
+
+p.title:after {
+    content: attr(data-text);
+    -webkit-text-stroke: 6px #844733;
+    color: #844733;
+    position: absolute;
+    left: 0;
+    z-index: -1
+  }
