@@ -10,11 +10,10 @@ function startBattle() {
     socket.emit('startBattle');
     console.log("emit start battle");
     socket.on('gameState', function (data) {
-        // console.log(data);
         updateGameStateFromRemote(data);
         updatePlayerHealthBars();
         updatePlayerNames();
-
+        updateTickRate(data);
     });
     requestAnimationFrame(animate);
 }
@@ -25,7 +24,7 @@ function doUpload() {
     socket.emit('uploadRobot', { name: nameInput, color: "RED", robotCode: userCode });
 }
 
-gameStates = [{},{}];
+let gameStatesContainer = [{ players: [], projectiles: [] },{ players: [], projectiles: [] }];
 GameRenderer = new Renderer(ctx);
 
 function updateGameStateFromRemote(data) {
@@ -39,41 +38,50 @@ function updateGameStateFromRemote(data) {
    let newGameState = { players: [], projectiles: [] };
     newGameState.players = data.robots;
     for (let player of newGameState.players) {
-        player.rotation = player.angle || 0;
-        player.turretRotation = player.turretAngle || 0;
-        player.location = player.position;
+        player.angle = player.angle || 0;
+        player.turretAngle = player.turretAngle || 0;
+        player.position = player.position;
         player.maxHealth = 100;
         player.health = player.hitPoints;
         player.height = 25;
         player.width = 35;
+        player.color = Colours[player.color.toUpperCase()];
     }
-    newGameState.players[0].color = Colours.RED;
-    newGameState.players[1].color = Colours.BLUE;
+
     newGameState.projectiles = data.projectiles;
     newGameState.projectiles = newGameState.projectiles.map(projectile => ({
         ...projectile,
-        location: projectile.position,
-        rotation: Math.atan2(projectile.velocity.y,projectile.velocity.x)
+        position: projectile.position,
+        angle: Math.atan2(projectile.velocity.y,projectile.velocity.x)
     }));
     newGameState.timestamp = new Date().getTime();
-    gameStates[0] = gameStates[1];
-    gameStates[1] = newGameState;
+    gameStatesContainer[0] = gameStatesContainer[1];
+    gameStatesContainer[1] = newGameState;
 }
 
 function getGameState() {
-    return gameStates[0];
+    return gameStatesContainer[0];
 }
 
 function animate() {
     gameState = getGameState();
-    if(gameStates[0] != {}){
-        gameState = interpolateGameState(gameStates[0],gameStates[1]);
+    if(gameStatesContainer[0].players.length > 0){
+        gameState = interpolateGameState(gameStatesContainer[0],gameStatesContainer[1]);
     } 
     drawGame(gameState);
     updatePlayerHealthBars();
     requestAnimationFrame(animate);
 }
 
+let TICK_RATE = 200;
+
+function getTickRate() {
+    return TICK_RATE;
+}
+
+function updateTickRate(data) {
+    TICK_RATE = data.tickRate;
+}
 
 function updatePlayerNames() {
     for(let i = 0; i < gameState.players.length; i++) {
@@ -90,7 +98,7 @@ function updatePlayerHealthBars() {
 
 function drawGame(gameState) {
     ctx.fillStyle = Colours.GREY;
-    ctx.fillRect(0, 0, 600, 600)
+    ctx.fillRect(0, 0, 600, 600);
     let players = gameState.players || null;
     let projectiles = gameState.projectiles || null;
     for (let player of players) {

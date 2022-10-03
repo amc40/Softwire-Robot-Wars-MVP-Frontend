@@ -27,10 +27,10 @@ class Renderer {
     drawTankBody(tank) {
         ctx.save();
 
-        const tankCanvasX = this.gameXToCanvasX(tank.location.x);
-        const tankCanvasY = this.gameYToCanvasY(tank.location.y);
+        const tankCanvasX = this.gameXToCanvasX(tank.position.x);
+        const tankCanvasY = this.gameYToCanvasY(tank.position.y);
         ctx.translate(tankCanvasX, tankCanvasY);
-        ctx.rotate(tank.rotation);
+        ctx.rotate(tank.angle);
         //draw tracks
         ctx.beginPath();
         ctx.strokeStyle = Colours.BLACK;
@@ -57,10 +57,10 @@ class Renderer {
         ctx.fillStyle = tank.color;
 
         //circle
-        const tankCanvasX = this.gameXToCanvasX(tank.location.x);
-        const tankCanvasY = this.gameYToCanvasY(tank.location.y);
+        const tankCanvasX = this.gameXToCanvasX(tank.position.x);
+        const tankCanvasY = this.gameYToCanvasY(tank.position.y);
         ctx.translate(tankCanvasX, tankCanvasY);
-        ctx.rotate(tank.rotation);
+        ctx.rotate(tank.angle);
         ctx.beginPath();
         ctx.arc(0, 0, 8, 0, 2 * Math.PI);
         ctx.fill();
@@ -89,10 +89,10 @@ class Renderer {
         ctx.fillStyle = projectile.owner.color;
 
         ctx.save();
-        const projectileCanvasX = this.gameXToCanvasX(projectile.location.x);
-        const projectileCanvasY = this.gameYToCanvasY(projectile.location.y);
+        const projectileCanvasX = this.gameXToCanvasX(projectile.position.x);
+        const projectileCanvasY = this.gameYToCanvasY(projectile.position.y);
         ctx.translate(projectileCanvasX, projectileCanvasY);
-        ctx.rotate(projectile.rotation);
+        ctx.rotate(projectile.angle);
 
         //trail
         ctx.globalAlpha = 0.7;
@@ -125,13 +125,13 @@ class Renderer {
 }
 
 class Tank {
-    constructor(location = { x: 0, y: 0 }, rotation = 0, turretAngle = 0, color = "GREEN", name = "BOB") {
-        this.location = location;
+    constructor(position = { x: 0, y: 0 }, angle = 0, turretAngle = 0, color = "GREEN", name = "BOB") {
+        this.position = position;
         this.turretAngle = turretAngle;
         this.color = color;
         this.width = 35;
         this.height = 25;
-        this.rotation = rotation;
+        this.angle = angle;
         this.speed = 1;
         this.stateTimer = 100;
         this.name = name;
@@ -142,9 +142,9 @@ class Tank {
 }
 
 class Projectile {
-    constructor(location = { x: 0, y: 0 }, rotation = 0, owner = null) {
-        this.location = location;
-        this.rotation = rotation;
+    constructor(position = { x: 0, y: 0 }, angle = 0, owner = null) {
+        this.position = position;
+        this.angle = angle;
         this.owner = owner;
         this.color = owner.color;
     }
@@ -152,34 +152,31 @@ class Projectile {
 
 
 function interpolateGameState(lastGameState, nextGameState) {
-    const UPDATE_RATE = 32.25;
+    let UPDATE_RATE = getTickRate();
     // we are storing the 2 most recent game states
     // to smooth animations we will assume a fixed update rate and render a weighted average of the positions/rotations of game objects
     // the weighting calculation will be: animationDelta = (timeNow - timeAtMostRecentGameState) / UPDATE_RATE
     const timeNow = new Date().getTime();
-    const animationDelta = Math.min((timeNow - nextGameState.timestamp) / UPDATE_RATE, 1.5);
+    const animationDelta = Math.min((timeNow - nextGameState.timestamp) / UPDATE_RATE, 5); //limit to some arbitrary maximum number of ticks to interpolate for
     let interpolatedGameState = {};
-    interpolatedGameState = Object.assign(interpolatedGameState,lastGameState);
-    console.log(lastGameState.players)
-    console.log(interpolateGameState.players)
+    interpolatedGameState = JSON.parse(JSON.stringify(lastGameState));
     for (let player of interpolatedGameState.players) {
         let name = player.name;
         let playerIndexNextGameState = nextGameState.players.findIndex(player => player.name == name);
-        if (isPresentNextGameState != -1) {
+        if (playerIndexNextGameState != -1) {
             futurePlayer = nextGameState.players[playerIndexNextGameState];
-            player.rotation += (futurePlayer.rotation - player.rotation) * animationDelta;
-            player.turretRotation += (futurePlayer.turretRotation - player.turretRotation) * animationDelta;
-            player.location.x += (futurePlayer.location.x - player.location.x) * animationDelta;
-            player.location.y += (futurePlayer.location.y - player.location.y) * animationDelta;
-            player.health += (futurePlayer.health - player.health) * animationDelta;
+            player.angle = player.angle + (futurePlayer.angle - player.angle) * animationDelta;
+            player.turretAngle = player.turretAngle + (futurePlayer.turretAngle - player.turretAngle) * animationDelta;
+            player.position.x = player.position.x + (futurePlayer.position.x - player.position.x) * animationDelta;
+            player.position.y = player.position.y + (futurePlayer.position.y - player.position.y) * animationDelta;
+            player.health = player.health + (futurePlayer.health - player.health) * animationDelta;
         }
     }
-    for (let projectile of interpolateGameState.projectiles) {
-        // project forwards by current velocity (avoids having to check if projectile exists in nextGameState)
-        projectile.x += projectile.velocity.x * animationDelta;
-        projectile.y += projectile.velocity.y * animationDelta;
+    for (let projectile of interpolatedGameState.projectiles) {
+        projectile.position.x = projectile.position.x + projectile.velocity.x * animationDelta;
+        projectile.position.y = projectile.position.y + projectile.velocity.y * animationDelta;
     }
-    return interpolateGameState;
+    return interpolatedGameState;
 }
 
 const canvas = document.getElementById('cvs');
