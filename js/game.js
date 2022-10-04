@@ -125,7 +125,8 @@ class Renderer {
 }
 
 class Tank {
-    constructor(position = { x: 0, y: 0 }, angle = 0, turretAngle = 0, color = "GREEN", name = "BOB") {
+    constructor(position, angle = 0, turretAngle = 0, color = "GREEN", name = "BOB") {
+        console.log(position);
         this.position = position;
         this.turretAngle = turretAngle;
         this.color = color;

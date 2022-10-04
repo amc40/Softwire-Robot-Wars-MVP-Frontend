@@ -1,10 +1,10 @@
 
 function gameUpdateLoop() {
     for (let tank of players) {
-        tank.rotation += 1.5;
-        tank.turretAngle -= 2;
+        tank.angle += 1 * Math.PI/180;
+        tank.turretAngle -= 2 * Math.PI/180;
         tank.moveForward(tank.speed);
-        if(!inBounds(tank.location, 50)){
+        if(!inBounds(tank.position, 50)){
             tank.moveForward(-tank.speed);
         }
         if(Math.random() < 0.05) {
@@ -12,8 +12,8 @@ function gameUpdateLoop() {
         }
     }
     for (let projectile of projectiles) {
-        projectile.location.x += Math.cos(projectile.rotation * Math.PI / 180) * 5;
-        projectile.location.y += Math.sin(projectile.rotation * Math.PI / 180) * 5;
+        projectile.position.x += Math.cos(projectile.angle) * 5;
+        projectile.position.y += Math.sin(projectile.angle) * 5;
     }
     checkProjectileCollisions();
     deleteProjectiles();
@@ -30,7 +30,7 @@ function checkProjectileCollisions() {
             if(projectile.owner != player){
                 if(checkCollides(projectile, player)){
                     player.health -= 10;
-                    projectile.location.x = -1000;
+                    projectile.position.x = -1000;
                 }
             }
         }
@@ -39,13 +39,13 @@ function checkProjectileCollisions() {
 
 function checkCollides(projectile, tank) {
     // just naive distance for now
-    let distance = (projectile.location.x-tank.location.x)**2 + (projectile.location.y-tank.location.y)**2
+    let distance = (projectile.position.x-tank.position.x)**2 + (projectile.position.y-tank.position.y)**2
     return distance < 20**2;
 }
 
 function drawGame(gameState) {
     ctx.fillStyle = Colours.GREY;
-    ctx.fillRect(0, 0, 640, 480)
+    ctx.fillRect(0, 0, 600, 600)
     let players = gameState.players || null;
     let projectiles = gameState.projectiles || null;
     for (let player of players) {
@@ -60,18 +60,18 @@ function drawGame(gameState) {
 }
 
 function deleteProjectiles() {
-    projectiles = projectiles.filter(a => inBounds(a.location));
+    projectiles = projectiles.filter(a => inBounds(a.position));
 }
 
 function inBounds(obj, buffer=0) {
-    return obj.x >= -10 + buffer && obj.x < 650 - buffer && obj.y >= -10 + buffer && obj.y < 490 - buffer
+    return obj.x >= -10 + buffer && obj.x < 610 - buffer && obj.y >= -10 + buffer && obj.y < 610 - buffer
 }
 
 Tank.prototype.fireProjectile = function () {
     let projectile = new Projectile(
-        {x: this.location.x + Math.cos((this.rotation + this.turretAngle) * Math.PI / 180) * 20,
-        y: this.location.y + Math.sin((this.rotation + this.turretAngle) * Math.PI / 180) * 20},
-        this.rotation + this.turretAngle,
+        {x: this.position.x + Math.cos((this.angle + this.turretAngle)) * 20,
+        y: this.position.y + Math.sin((this.angle + this.turretAngle)) * 20},
+        this.angle + this.turretAngle,
         this
     );
     projectiles.push(projectile);
@@ -79,8 +79,8 @@ Tank.prototype.fireProjectile = function () {
 
 
 Tank.prototype.moveForward = function(distance) {
-    this.location.x += Math.cos(this.rotation * Math.PI / 180) * distance;
-    this.location.y += Math.sin(this.rotation * Math.PI / 180) * distance;
+    this.position.x += Math.cos(this.angle) * distance;
+    this.position.y += Math.sin(this.angle) * distance;
     this.stateTimer--;
     if (this.stateTimer == 0) {
         this.stateTimer = Math.round(Math.random() * 300);
@@ -103,20 +103,20 @@ function updatePlayerHealthBars() {
 }
 
 const GameRenderer = new Renderer(ctx);
+GameRenderer.gameXToCanvasX = (a) => a;
+GameRenderer.gameYToCanvasY = (a) => a;
 let players = [];
 let projectiles = [];
 
-let player1 = new Tank(undefined, Math.random() * 360, undefined, Colours.RED, "Alice");
-player1.location.x = 50 + Math.random() * 550;
-player1.location.y = 50 + Math.random() * 380;
+let player1 = new Tank( new Object({x: 50 + Math.random() * 550, y: 50 + Math.random() * 400}), Math.random() * 360, undefined, Colours.RED, "Alice");
 players.push(player1);
 
-let player2 = new Tank(undefined, Math.random() * 360, undefined, Colours.BLUE, "Bob");
-player2.location.x = 50 + Math.random() * 550;
-player2.location.y = 50 + Math.random() * 380;
+let player2 = new Tank(new Object({x: 50 + Math.random() * 550, y: 50 + Math.random() * 400}), Math.random() * 360, undefined, Colours.BLUE, "Bob");
 players.push(player2);
 
-
+console.log(players);
 updatePlayerNames();
 
 gameUpdateLoop();
+
+
