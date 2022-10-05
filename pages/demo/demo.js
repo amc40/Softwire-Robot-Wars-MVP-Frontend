@@ -16,7 +16,8 @@ function gameUpdateLoop() {
         projectile.position.y += Math.sin(projectile.angle) * 5;
     }
     checkProjectileCollisions();
-    deleteProjectiles();
+    projectiles = filterInBounds(projectiles);
+    particles = filterInBounds(particles);
     simulatedGameState = { players: players, projectiles: projectiles };
     drawGame(simulatedGameState);
     updatePlayerHealthBars();
@@ -31,6 +32,12 @@ function checkProjectileCollisions() {
                 if(checkCollides(projectile, player)){
                     player.health -= 10;
                     projectile.position.x = -1000;
+                    for(i=0;i<50;i++){
+                        let particle = new Spark({x: player.position.x, y: player.position.y});
+                        particle.setRandomVelocity();
+                        particle.gravity.y = 0.5;
+                        particles.push(particle);
+                    }
                 }
             }
         }
@@ -57,10 +64,13 @@ function drawGame(gameState) {
     for (let player of players) {
         GameRenderer.drawTankTurret(player);
     }
+    for (let particle of particles) {
+        GameRenderer.drawParticle(particle);
+    }
 }
 
-function deleteProjectiles() {
-    projectiles = projectiles.filter(a => inBounds(a.position));
+function filterInBounds(objects) {
+    return objects.filter(a => inBounds(a.position));
 }
 
 function inBounds(obj, buffer=0) {
@@ -107,6 +117,7 @@ GameRenderer.gameXToCanvasX = (a) => a;
 GameRenderer.gameYToCanvasY = (a) => a;
 let players = [];
 let projectiles = [];
+let particles = [];
 
 let player1 = new Tank( new Object({x: 50 + Math.random() * 550, y: 50 + Math.random() * 400}), Math.random() * 360, undefined, Colours.RED, "Alice");
 players.push(player1);

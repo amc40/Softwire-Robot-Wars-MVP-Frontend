@@ -26,6 +26,8 @@ class Renderer {
 
     drawTankBody(tank) {
         ctx.save();
+        ctx.strokeStyle = Colours.BLACK;
+        ctx.lineWidth = 1;
 
         const tankCanvasX = this.gameXToCanvasX(tank.position.x);
         const tankCanvasY = this.gameYToCanvasY(tank.position.y);
@@ -54,6 +56,7 @@ class Renderer {
         ctx.save();
 
         ctx.strokeStyle = Colours.BLACK;
+        ctx.lineWidth = 1;
         ctx.fillStyle = tank.color;
 
         //circle
@@ -86,6 +89,7 @@ class Renderer {
     drawProjectile(projectile) {
 
         ctx.strokeStyle = Colours.BLACK;
+        ctx.lineWidth = 1;
         ctx.fillStyle = projectile.owner.color;
 
         ctx.save();
@@ -121,6 +125,10 @@ class Renderer {
         ctx.restore();
 
         ctx.globalAlpha = 1;
+    }
+
+    drawParticle(particle) {
+        particle.draw(this.ctx);
     }
 }
 
