@@ -114,7 +114,6 @@ players.push(player1);
 let player2 = new Tank(new Object({x: 50 + Math.random() * 550, y: 50 + Math.random() * 400}), Math.random() * 360, undefined, Colours.BLUE, "Bob");
 players.push(player2);
 
-console.log(players);
 updatePlayerNames();
 
 gameUpdateLoop();
