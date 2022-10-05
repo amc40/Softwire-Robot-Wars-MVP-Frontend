@@ -79,4 +79,17 @@ class Smoke extends Particle {
         this.size = size;
         super(position, velocity, gravity);
     }
+
+    setRandomVelocity() {
+        let angle = Math.random() * 2 * Math.PI;
+        let power = 8 + Math.random() * 10;
+        this.velocity.x = power * Math.cos(angle);
+    }
+
+    updatePosition() {
+        this.velocity.x *= 0.95;
+        this.position.x += this.velocity.x;
+        this.position.y += this.gravity.y;
+    }
+
 }
