@@ -16,7 +16,6 @@ function startBattle() {
     socket.on('gameState', function (data) {
         updateGameStateFromRemote(data);
         updatePlayerHealthBars();
-        updatePlayerNames();
         updateTickRate(data);
     });
     requestAnimationFrame(animate);
@@ -87,13 +86,6 @@ function updateTickRate(data) {
     TICK_RATE = data.tickRate;
 }
 
-function updatePlayerNames() {
-    for(let i = 0; i < gameState.players.length; i++) {
-        document.getElementById('player'+(i+1)+'-name').innerText = gameState.players[i].name;
-        document.getElementById('player'+(i+1)+'-health').style.backgroundColor = gameState.players[i].color;
-    }
-}
-
 function updatePlayerHealthBars() {
     for(let i = 0; i < gameState.players.length; i++) {
         document.getElementById('player'+(i+1)+'-health').style.width = (Math.max(0,(gameState.players[i].health / gameState.players[i].maxHealth))*100)+"%";
@@ -129,5 +121,7 @@ function generateHealthBars(data) {
         </li>
         <br />
         `;
+        document.getElementById('player'+(index+1)+'-health').style.backgroundColor = robot.color;
+        document.getElementById('player'+(index+1)+'-name').innerText = robot.name;
     }
 }
