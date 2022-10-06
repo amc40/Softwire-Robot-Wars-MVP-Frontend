@@ -10,12 +10,16 @@ canvas {
 ul.status {
     list-style:none;
     min-height: 150px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 
 .health-background {
     background-color:rgb(183, 183, 183);
     width: 200px;
-
+    overflow: hidden;
+    border-radius: 10px;
 }
 
 .health-foreground {
