@@ -8,7 +8,8 @@ canvas {
 }
 
 ul.status {
-    list-style:none
+    list-style:none;
+    min-height: 150px;
 }
 
 .health-background {

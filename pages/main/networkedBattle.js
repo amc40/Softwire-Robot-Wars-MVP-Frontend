@@ -6,6 +6,10 @@ socket.on('welcome', function (data) {
 
 });
 
+socket.on('battleInfo', function (data) {
+    generateHealthBars(data);
+});
+
 function startBattle() {
     socket.emit('startBattle');
     console.log("emit start battle");
@@ -109,5 +113,21 @@ function drawGame(gameState) {
     }
     for (let player of players) {
         GameRenderer.drawTankTurret(player);
+    }
+}
+
+function generateHealthBars(data) {
+    let robots = data.participatingRobots;
+    for(let [index,robot] of robots.entries()) {
+        element = document.getElementById("healthBarsList");
+        element.innerHTML += `
+        <li>
+          Player ${index+1} (<span id="player${index+1}-name"></span>)<br />
+          <div class="health-background">
+            <div id="player${index+1}-health" class="health-foreground">&nbsp;</div>
+          </div>
+        </li>
+        <br />
+        `;
     }
 }
