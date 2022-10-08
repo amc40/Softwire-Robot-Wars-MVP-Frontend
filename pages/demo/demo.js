@@ -1,4 +1,5 @@
 
+
 function gameUpdateLoop() {
     for (let tank of players) {
         tank.angle += 1 * Math.PI/180;
@@ -7,15 +8,25 @@ function gameUpdateLoop() {
         if(!inBounds(tank.position, 50)){
             tank.moveForward(-tank.speed);
         }
-        if(Math.random() < 0.05) {
+        if(Math.random() < 0.075) {
             tank.fireProjectile();
         }
+
+        if(tank.health/tank.maxHealth < 0.5) {
+            if(Math.random() < 0.05 + 0.4*(1-(tank.health/tank.maxHealth)/0.5)){
+                let particle = new Smoke({x: tank.position.x, y: tank.position.y});
+                particle.setRandomVelocity();
+                particles.push(particle);
+            }
+        }   
     }
     for (let projectile of projectiles) {
         projectile.position.x += Math.cos(projectile.angle) * 5;
         projectile.position.y += Math.sin(projectile.angle) * 5;
     }
     checkProjectileCollisions();
+
+
     projectiles = filterInBounds(projectiles);
     particles = filterInBounds(particles);
     simulatedGameState = { players: players, projectiles: projectiles };
@@ -38,6 +49,7 @@ function checkProjectileCollisions() {
                         particle.gravity.y = 0.5;
                         particles.push(particle);
                     }
+ 
                 }
             }
         }
@@ -66,6 +78,7 @@ function drawGame(gameState) {
     }
     for (let particle of particles) {
         GameRenderer.drawParticle(particle);
+        particle.updatePosition();
     }
 }
 
