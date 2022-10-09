@@ -11,6 +11,7 @@ socket.on('battleInfo', function (data) {
 });
 
 function startBattle() {
+    resetGame();
     socket.emit('startBattle');
     console.log("emit start battle");
     socket.on('gameState', function (data) {
@@ -19,6 +20,11 @@ function startBattle() {
         updateTickRate(data);
     });
     requestAnimationFrame(animate);
+}
+
+function resetGame() {
+    let element = document.getElementById("healthBarsList");
+    element.innerHTML = '';
 }
 
 function doUpload() {
@@ -62,9 +68,7 @@ function updateGameStateFromRemote(data) {
     gameStatesContainer[1] = newGameState;
 
     for(let gameEvent of gameStatesContainer[0].gameEvents) {
-        console.log(gameEvent);
         if(gameEvent.type == "player_hit_event") {
-            console.log("player hit");
             for(i=0;i<50;i++){
                 let particle = new Spark({x: GameRenderer.gameXToCanvasX(gameEvent.position.x), y: GameRenderer.gameYToCanvasY(gameEvent.position.y)});
                 particle.setRandomVelocity();
@@ -101,6 +105,7 @@ function animate() {
 
 let TICK_RATE = 200;
 let particles = [];
+
 
 function getTickRate() {
     return TICK_RATE;
@@ -139,7 +144,7 @@ function drawGame(gameState) {
 function generateHealthBars(data) {
     let robots = data.participatingRobots;
     for(let [index,robot] of robots.entries()) {
-        element = document.getElementById("healthBarsList");
+        let element = document.getElementById("healthBarsList");
         element.innerHTML += `
         <li>
           Player ${index+1} (<span id="player${index+1}-name"></span>)<br />
