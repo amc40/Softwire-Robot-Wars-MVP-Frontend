@@ -27,7 +27,7 @@ function doUpload() {
     socket.emit('uploadRobot', { name: nameInput, color: "RED", robotCode: userCode });
 }
 
-let gameStatesContainer = [{ players: [], projectiles: [] },{ players: [], projectiles: [] }];
+let gameStatesContainer = [{ players: [], projectiles: [], gameEvents: [] },{ players: [], projectiles: [], gameEvents: [] }];
 GameRenderer = new Renderer(ctx);
 
 function updateGameStateFromRemote(data) {
@@ -38,7 +38,7 @@ function updateGameStateFromRemote(data) {
             turretAngle
 
     */
-   let newGameState = { players: [], projectiles: [] };
+   let newGameState = { players: [], projectiles: [], gameEvents: [] };
     newGameState.players = data.robots;
     for (let player of newGameState.players) {
         player.angle = player.angle || 0;
@@ -50,7 +50,7 @@ function updateGameStateFromRemote(data) {
         player.width = 35;
         player.color = Colours[player.color.toUpperCase()];
     }
-
+    newGameState.gameEvents = data.gameEvents;
     newGameState.projectiles = data.projectiles;
     newGameState.projectiles = newGameState.projectiles.map(projectile => ({
         ...projectile,
@@ -60,6 +60,20 @@ function updateGameStateFromRemote(data) {
     newGameState.timestamp = new Date().getTime();
     gameStatesContainer[0] = gameStatesContainer[1];
     gameStatesContainer[1] = newGameState;
+
+    for(let gameEvent of gameStatesContainer[0].gameEvents) {
+        console.log(gameEvent);
+        if(gameEvent.type == "player_hit_event") {
+            console.log("player hit");
+            for(i=0;i<50;i++){
+                let particle = new Spark({x: GameRenderer.gameXToCanvasX(gameEvent.position.x), y: GameRenderer.gameYToCanvasY(gameEvent.position.y)});
+                particle.setRandomVelocity();
+                particle.gravity.y = 0.5;
+                particles.push(particle);
+            }
+        }
+    }
+    
 }
 
 function getGameState() {
@@ -70,6 +84,15 @@ function animate() {
     gameState = getGameState();
     if(gameStatesContainer[0].players.length > 0){
         gameState = interpolateGameState(gameStatesContainer[0],gameStatesContainer[1]);
+        for(let player of gameState.players) {
+            if(player.health/player.maxHealth < 0.5) {
+                if(Math.random() < 0.05 + 0.4*(1-(player.health/player.maxHealth)/0.5)){
+                    let particle = new Smoke({x: GameRenderer.gameXToCanvasX(player.position.x), y: GameRenderer.gameYToCanvasY(player.position.y)});
+                    particle.setRandomVelocity();
+                    particles.push(particle);
+                }
+            } 
+        }  
     } 
     drawGame(gameState);
     updatePlayerHealthBars();
@@ -77,6 +100,7 @@ function animate() {
 }
 
 let TICK_RATE = 200;
+let particles = [];
 
 function getTickRate() {
     return TICK_RATE;
@@ -105,6 +129,10 @@ function drawGame(gameState) {
     }
     for (let player of players) {
         GameRenderer.drawTankTurret(player);
+    }
+    for (let particle of particles) {
+        GameRenderer.drawParticle(particle);
+        particle.updatePosition();
     }
 }
 
